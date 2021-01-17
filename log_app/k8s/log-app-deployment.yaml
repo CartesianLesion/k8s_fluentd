@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: log-app
+spec:
+  selector:
+    matchLabels:
+      app: log-app
+  replicas: 4
+  template:
+    metadata:
+      labels:
+        app: log-app
+    spec:
+      containers:
+      - name: log-app
+        image: log-app:latest
+        imagePullPolicy: Never
+        ports:
+        - containerPort: 5000
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: splunk
+spec:
+  selector:
+    matchLabels:
+      app: splunk
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: splunk
+    spec:
+      containers:
+      - name: splunk
+        image: cartesianlesion/splunk:latest
+        imagePullPolicy: Never
+        env:
+        - name: SPLUNK_PASSWORD
+          value: "SplunkP@55w0rd!!!"
+        - name: SPLUNK_START_ARGS
+          value: "--accept-license"
+        ports:
+        - containerPort: 8000
+        - containerPort: 8089
